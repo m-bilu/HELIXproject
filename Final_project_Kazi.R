@@ -4,6 +4,7 @@ library(car)
 library(quantmod)
 library(MASS)
 library(corrplot)
+
 data2<-load("exposome_NA.RData")
 
 
@@ -48,7 +49,18 @@ diet_data<-subset(total_data,select = c("ID",'h_cereal_preg_Ter',
                                         'h_legume_preg_Ter','h_meat_preg_Ter',
                                         'h_veg_preg_Ter',"hs_correct_raven"
                                           ))#this needs to be cleaned up
-#diet_data contains possible cov of interest and outcome
+#diet_data ->contains possible cov of interest and outcome
+
+#test model
+
+M1<-lm(diet_data$hs_correct_raven~.,data = diet_data)
+
+
+vif_values <- vif(M1)           #create vector of VIF values
+
+barplot(vif_values, main = "VIF Values", horiz = TRUE, col = "steelblue") #create horizontal bar chart to display each VIF value
+
+abline(v = 5, lwd = 3, lty = 2)
 
 #postnatal and prenatal behavior of the mother and how it affects the 
 #raven score
