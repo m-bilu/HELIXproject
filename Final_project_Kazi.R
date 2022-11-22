@@ -1,3 +1,9 @@
+#Packages
+library(caTools)
+library(car)
+library(quantmod)
+library(MASS)
+library(corrplot)
 data2<-load("exposome_NA.RData")
 
 
@@ -8,10 +14,12 @@ lifestyles_df<-codebook[codebook$domain=='Lifestyles',]
 postnatal_lifestyle<-lifestyles_df[lifestyles_df$period=='Postnatal',]
 pregnancy_lifestyle<-lifestyles_df[lifestyles_df$period=='Pregnancy',]
 df_pregnancy_lifestyle<-pregnancy_lifestyle
+
 #pregnancy
 #how many different subfamilies are there->12
 losub<-c(pregnancy_lifestyle$subfamily)
 length(losub)
+
 #which subfamily do we have the most data on
 df1<-data.frame(losub)
 names(which.max(table(df1$losub)))
@@ -27,10 +35,20 @@ df_diet<-df_pregnancy_lifestyle[!(df_pregnancy_lifestyle$subfamily=="Physical ac
                          ),]
 
 
-lov_diet<-c(df_diet$variable_name)
+lov_diet<-c("ID",df_diet$variable_name)#ignore this for now
 
-#contains values of cov that are under the subfamily of diet
-diet_data<-subset(exposome,select = lov_diet)
+
+
+
+#ExposomeNA and PhenotypeNA data
+total_data <- merge(exposome,phenotypeNA,by="ID")
+diet_data<-subset(total_data,select = c("ID",'h_cereal_preg_Ter',
+                                        'h_dairy_preg_Ter','h_fastfood_preg_Ter',
+                                        'h_fish_preg_Ter','h_fruit_preg_Ter',
+                                        'h_legume_preg_Ter','h_meat_preg_Ter',
+                                        'h_veg_preg_Ter',"hs_correct_raven"
+                                          ))#this needs to be cleaned up
+#diet_data contains possible cov of interest and outcome
 
 #postnatal and prenatal behavior of the mother and how it affects the 
 #raven score
