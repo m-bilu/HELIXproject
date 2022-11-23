@@ -27,5 +27,4 @@ codebook['hs_bmi_c_cat']
 
 
 ## 1) Summary
-## QUESTION: How much data do we include in our summary? Lifestyle Covariates
 

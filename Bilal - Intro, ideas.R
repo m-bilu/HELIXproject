@@ -35,6 +35,10 @@ load("C:/Users/mbila/Downloads/exposome_NA.RData")
 # CURRENT QUESTION: building the best possible predictive model for birthweight
 # what does exploring mean here?
 
+# ASSUMPTIONS:
+# - data is formatted correctly, is correctly corrected
+# - All selected covariates pertain to the mother, not the child
+
 ##############################################
 
 # Possible outcome variables in phenotypeNA:
@@ -55,4 +59,4 @@ codebook['hs_bmi_c_cat']
 #### GOALS OF EDA
 # Summarize our dataset
 # Visualize dataset
-# Identify missing values and come up with a cleaning strategy
+# Data cleaning (in seperate file)
