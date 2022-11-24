@@ -7,7 +7,7 @@ full_data <- cbind(full_data, covariatesNA[, 2:ncol(covariatesNA)])
 
 ## Checking full_data is correct
 intersect(colnames(full_data), colnames(covariatesNA)) == colnames(covariatesNA)
-intersect(full_data, covariatesNA) == covariatesNA
+# intersect(full_data, covariatesNA) == covariatesNA
 
 ##  Checking how many are lifestyle 
 ##    (this may mean we need to update other datasets as well)
