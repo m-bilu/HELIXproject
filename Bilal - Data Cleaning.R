@@ -66,8 +66,10 @@ which(is.na(cleandata)) # Should be 0
 ## Deleting wierd X column (duplicate column of ID column):
 cleandata <- cleandata[, -1]
 
-write.csv(cleandata, 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v1.csv')
+write.csv(cleandata, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v1.csv',
+            row.names = FALSE)
 
+## Double check if u have all covariates, should be 241 not 237 
 ## NOTE: # graph with MSPE, phi, lambda
 
 
