@@ -63,6 +63,9 @@ for (colnum in 1:ncol(cleandata)) {
 which(is.na(data)) # Should be non-zero vector
 which(is.na(cleandata)) # Should be 0
 
+## Deleting wierd X column (duplicate column of ID column):
+cleandata <- cleandata[, -1]
+
 write.csv(cleandata, 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v1.csv')
 
 ## NOTE: # graph with MSPE, phi, lambda
