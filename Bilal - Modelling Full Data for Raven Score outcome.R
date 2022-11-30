@@ -18,6 +18,7 @@ fulldata <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean
 
 # Defining worst/best model for step function
 M0 <- lm(hs_correct_raven ~ 1, data = fulldata)
+Mfull <- lm(hs_correct_raven ~ ., data = fulldata)
 
 
 ################################ FORWARD Selection:
@@ -28,19 +29,26 @@ M0 <- lm(hs_correct_raven ~ 1, data = fulldata)
 ## Trick for including interaction terms in step function without 
 ##    including them in lm model (which would take a while):
 ##    https://stackoverflow.com/questions/22418116/adding-interaction-terms-to-step-aic-in-r
-inputStr <- paste(' I(',colnames(fulldata)[colnames(fulldata)!='hs_correct_raven'],"^2) +", collapse='') 
 
+## IMPORTANT NOTE:
+## Quadratic terms are only relevant for continuous covariates
+fulldata_cont <- fulldata[, which(sapply(fulldata, is.numeric))]
+inputStr <- paste(' I(',colnames(fulldata_cont)[colnames(fulldata_cont)!='hs_correct_raven'],"^2) +", collapse='') 
+
+
+## LEVEL 1: Main effects only
 system.time({
   Mfwd <- step(object = M0, # base model
-               scope = . ~ .^2 + 
-                 substr(inputStr, 1, nchar(inputStr)-1),
+               scope = list(lower = M0, upper = Mfull),
                trace = 1, # trace prints out information
-               direction = "forward" )
+               direction = "forward")
   
-  substr(., 1, nchar(.)-1)
 })
 
-substr(inputStr, 1, nchar(inputStr)-1)
+length(unique(rownames(summary(Mfwd)$coefficients))) # 84 unique covs in full
+
+## LEVEL 2: Interactions
+# Too long, 2000 interactions to calculate in step
 
 
 
@@ -78,4 +86,15 @@ substr(inputStr, 1, nchar(inputStr)-1)
 #   - require some stat proof backing.
 #   - Overfitting can be ignrd by backward-stepwise, but severe p-flation
 
+## QUESTION OF GROUP:
+# What are the final conclusions of our q? Inference, Prediction?
+# Asking since our model must change to prioritize either
+# Deciding we dont need more covariates bc CI/PI is too variable
+# MODEL SELECTION ON SUBSET OF DATA? Doing so would make CI's accurate
+#   But is that really a priority for our q?
+
+# Check in with on Aania list of summary statistics
+
+# Check in with Bilal, Aania on validation strategy
+#   (Training, Val, Test)
 
