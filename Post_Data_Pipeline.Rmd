@@ -1,0 +1,123 @@
+---
+title: "Final Project"
+output: html_document
+date: "2022-11-24"
+---
+
+# Loading Data
+```{r}
+data <- read.csv("/Users/srijanchaudhuri/Desktop/STAT 331/post_data.csv")
+nrow(data)
+```
+
+# Dealing with NA's
+```{r}
+data <- na.omit(data)
+```
+
+# Fixing factors
+```{r}
+data[,"hs_pet_dog_r2_None"] = as.factor(data$hs_pet_dog_r2_None)
+data[,"hs_pet_cat_r2_None"] = as.factor(data$hs_pet_cat_r2_None)
+```
+
+# Feature selection
+```{r}
+library(ggplot2)
+library(ggcorrplot)
+numeric_cov <- names(which(sapply(X = data, FUN = function(x) {(is.numeric(x))}))[-1])
+corr <- cor(data[,c("hs_correct_raven", numeric_cov)])
+ggcorrplot(corr, hc.order = TRUE, type = "lower")
+```
+
+We can drop hs_dif_hours_total_None as there is absence of strong correlation with the target variable.
+
+```{r}
+numeric_cov <- numeric_cov[!numeric_cov %in% c("hs_dif_hours_total_None")]
+```
+
+```{r}
+factorial_cov <- names(which(sapply(X = data, FUN = function(x) {(!is.numeric(x))})))
+factorial_cov
+```
+
+
+# Removing variates causing multicollinearity
+```{r}
+reduce_mcol <- function(v) {
+  flag <- TRUE # setting a boolean to help in the while loop
+  get_sxx<- function(x) { # calculating Sxx
+    sum((x - mean(x))^2)
+  }
+  i<-1
+  while(flag) {
+    m <- lm(hs_correct_raven ~ ., data = data) # improved model
+    s <- summary(m)$sigma
+    vx <- diag(vcov(m))[-1] / s^2 # calculating the standard error of covariates
+    sxx <- apply(df_mod[,-1], MARGIN=2, FUN = get_sxx)
+    vifs <- vx * sxx # calculating vifs
+    maxim <- max(vifs) # calculating the maximum vif
+    if (maxim >= v) {
+      idx <- which(vifs == maxim)[1] + 1 # finding index of maximum vif
+      data <- data[, -idx] # removing covariate observations of highest vif
+      i <- i + 1
+    } else { # enters when max(vif) < v
+      flag=FALSE
+    }
+  }
+ m # returns improved model
+}
+```
+
+# Variable selection using Stepwise selection
+```{r}
+library(MASS)
+# Fit the full model 
+frmla <- as.formula(paste("hs_correct_raven ~ ", 
+                          paste(c(factorial_cov, numeric_cov), collapse = "+"), 
+                          sep=""))
+mod1 <- lm(frmla, data = data)
+step_mod <- stepAIC(mod1, direction = "both", trace = FALSE)
+summary(step_mod)
+```
+```{r}
+covariates_step <- c("h_bfdur_Ter", "hs_bakery_prod_Ter", "hs_beverages_Ter", 
+                    "hs_fastfood_Ter", "hs_org_food_Ter", "hs_pet_cat_r2_None",
+                    "hs_proc_meat_Ter", "hs_readymade_Ter", "hs_total_bread_Ter"
+                    , "hs_total_cereal_Ter", "hs_total_fish_Ter", 
+                    "hs_total_fruits_Ter", "hs_total_meat_Ter", 
+                    "hs_total_potatoes_Ter", "hs_total_veg_Ter", 
+                    "hs_total_yog_Ter", "hs_KIDMED_None", "hs_mvpa_prd_alt_None"
+                    , "hs_sd_wk_None")
+step_data <- data[, c("hs_correct_raven",covariates_step)]
+```
+
+# Splitting into Training and Testing datasets
+```{r}
+library(caret)
+random_sample <- createDataPartition(step_data$hs_correct_raven, p = 0.8, list = FALSE)
+training_data  <- step_data[random_sample, ]
+testing_data <- step_data[-random_sample, ]
+```
+
+# Lasso 
+```{r}
+library("dplyr")
+y <- training_data$hs_correct_raven
+x <- data.matrix(training_data[,c(-1)])
+library(glmnet)
+cv_model <- cv.glmnet(x, y, alpha = 1)
+best_lambda <- cv_model$lambda.min
+plot(cv_model)
+```
+```{r}
+best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+coef(best_model)
+```
+
+```{r}
+library(Metrics)
+preds <- predict(best_model, s = best_lambda, newx = data.matrix(testing_data[,c(-1)]))
+rmse(testing_data$hs_correct_raven, preds)
+```
+
