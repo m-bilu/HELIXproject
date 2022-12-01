@@ -1,3 +1,10 @@
+# 
+# Input data -> receive training and testing data
+# 
+# Usage:
+# train_and_test <- train_test(the_complete_dataset)
+# train <- train_and_test$train
+# test <- train_and_test$test
 train_test <- function(data) {
   library(caret)
   set.seed(331)
@@ -5,10 +12,14 @@ train_test <- function(data) {
                                        list = FALSE)
   training_data  <- data[random_sample, ]
   testing_data <- data[-random_sample, ]
-  list("train" = training_data, "test" = testing_data)
+  list(train = training_data, test = testing_data)
 }
 
-
+# 
+# Input training dataset and all subset of covariates specific to the use case and receiving reduced covariates
+#
+# Usage:
+# reduced_covariates <- selection_lasso(train, covariates)
 selection_lasso <- function(train, covariates) {
   set.seed(331)
   library(glmnet)
