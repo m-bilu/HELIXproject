@@ -14,12 +14,7 @@
 ##    (with proper cleaning strategy)
 
 load("C:/Users/mbila/Downloads/exposome_NA.RData")
-fulldata <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v1.csv')
-
-# Defining worst/best model for step function
-M0 <- lm(hs_correct_raven ~ 1, data = fulldata)
-Mfull <- lm(hs_correct_raven ~ ., data = fulldata)
-
+data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v2.csv')
 
 ################################ FORWARD Selection:
 ## Using fwd so we dont need to mention upper model
@@ -32,9 +27,12 @@ Mfull <- lm(hs_correct_raven ~ ., data = fulldata)
 
 ## IMPORTANT NOTE:
 ## Quadratic terms are only relevant for continuous covariates
-fulldata_cont <- fulldata[, which(sapply(fulldata, is.numeric))]
-inputStr <- paste(' I(',colnames(fulldata_cont)[colnames(fulldata_cont)!='hs_correct_raven'],"^2) +", collapse='') 
+data_cont <- data[, which(sapply(data, is.numeric))]
+inputStr <- paste(' . + I(',colnames(data_cont)[colnames(data_cont)!='hs_correct_raven'],"^2) +", collapse='') 
 
+# Defining worst/best model for step function
+M0 <- lm(data$hs_correct_raven ~ 1, data = fulldata)
+Mfull <- lm(hs_correct_raven ~ substr(inputStr, 1, nchar(inputStr)-1), data)
 
 ## LEVEL 1: Main effects only
 system.time({
@@ -47,8 +45,9 @@ system.time({
 
 length(unique(rownames(summary(Mfwd)$coefficients))) # 84 unique covs in full
 
-## LEVEL 2: Interactions
-# Too long, 2000 interactions to calculate in step
+## Judging Quality of Data
+
+## If 
 
 
 
