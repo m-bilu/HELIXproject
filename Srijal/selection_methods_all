@@ -1,0 +1,28 @@
+# Don't include 100+ covariates, do EDA first, narrow covariates and then use,
+# prem parameter in the last line rejects every p-value with p > 0.1
+# similar intuition for the rest
+selection_backward <- function (train, covariates) {
+  library(olsrr)
+  frmla <- as.formula(paste("hs_correct_raven ~ ", 
+                            paste(covariates, collapse = "+"), sep=""))
+  model <- lm(frmla, data=train)
+  ols_step_backward_p(model, prem=0.1)
+}
+
+selection_forward <- function (train, covariates) {
+  library(olsrr)
+  frmla <- as.formula(paste("hs_correct_raven ~ ", 
+                            paste(covariates, collapse = "+"), sep=""))
+  model <- lm(frmla, data=train)
+  ols_step_forward_p(model, p=0.05)
+}
+
+
+selection_stepwise <- function(train, covariates) {
+  library(MASS)
+  frmla <- as.formula(paste("hs_correct_raven ~ ", 
+                            paste(covariates[1:80], collapse = "+"), 
+                            sep=""))
+  model <- lm(frmla, data = train)
+  stepAIC(model, direction = "both", trace = FALSE)
+}
