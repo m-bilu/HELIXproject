@@ -1,0 +1,117 @@
+---
+title: "Preg_lifestyle"
+author: "Kazi rahman"
+date: "2022-11-30"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(caTools)
+library(car)
+library(quantmod)
+library(MASS)
+library(corrplot)
+library(mctest)
+library(glmnet)
+library(ggplot2)
+library(GGally)
+library(caret)
+```
+
+Assumptions:
+Only categorical variables
+
+## EDA
+
+You can also embed plots, for example:
+
+```{r data, echo=FALSE}
+data<-read.csv('preg_data.csv')
+#Checking for Nans
+nan_count <-sapply(data, function(data) sum(length(which(is.na(data)))))
+nan_count <- data.frame(nan_count)
+nan_count
+#Replacing Nans with mean
+nan_rep<-mean(data$hs_correct_raven,na.rm = TRUE)
+data[is.na(data)] =nan_rep
+
+#Encoding character categorica values to numeric values
+data$h_pamod_t3_None<-factor(data$h_pamod_t3_None,
+                             level = c('None','Sometimes','Often','Very Often'),
+                             label = c(0,1,2,3))
+data$h_pavig_t3_None<-factor(data$h_pavig_t3_None,
+                             level = c('Low','Medium','High'),
+                             label = c(0,1,2))
+
+
+
+```
+Our covariate of interest or y, has 10 Nan values. The rest of our covariates
+do not have any Nans which is a good sign. We have established a cleaner
+dataset now. We can proceed onto visualizing our data to get a better 
+understanding
+
+```{r plots_data}
+data_matrix<-data.matrix(data)
+corr<-cor(data_matrix)
+corr
+ggpairs(data)
+GenderPlot1 = ggplot(data, aes(x = data$e3_alcpreg_yn_None, y = data$hs_correct_raven)) + geom_boxplot() 
+GenderPlot1
+GenderPlot2 = ggplot(data, aes(x = data$h_cereal_preg_Ter, y = data$hs_correct_raven)) + geom_boxplot() 
+GenderPlot2
+corrplot(corr)
+vif_values <- vif(M1) 
+vif_values
+mc.plot(M1)
+```
+Before proceding to our next step, which will be building the model,
+we want to perform feature selection and possible test for interactions.
+
+```{r feature_selection}
+x<-data.matrix(data[,c("e3_alcpreg_yn_None" , "h_cereal_preg_Ter" ,
+                            "h_dairy_preg_Ter" ,   "h_fastfood_preg_Ter",
+                             "h_fish_preg_Ter" ,    "h_folic_t1_None"   ,  
+                            "h_fruit_preg_Ter"   , "h_legume_preg_Ter"  , 
+                            "h_meat_preg_Ter" ,   
+                            "h_pamod_t3_None" ,    "h_pavig_t3_None"  ,   
+                            "h_veg_preg_Ter")])
+
+cv_model <- cv.glmnet(x, data$hs_correct_raven, alpha = 1)
+best_lambda <- cv_model$lambda.min
+best_lambda
+#The lambda value that minimizes the test MSE turns out to be 0.04498289
+plot(cv_model) 
+
+best_model <- glmnet(x, data$hs_correct_raven, alpha = 1, lambda = best_lambda)
+coef(best_model)
+
+test_cov_ind<-which(coef(best_model)==0)
+excluding_var<-c()
+for (i in test_cov_ind){
+  print(names(data[i]))
+  excluding_var <- c(excluding_var, names(data[i]))
+}
+print("cov that we may exclude")
+print(excluding_var)
+DF <- read.csv('preg_data.csv')
+
+df2<-subset(data,select = excluding_var)
+df3<-DF[,!names(DF) %in% 
+      excluding_var]
+
+
+lass_model<-lm(data$hs_correct_raven~.,data = df3)
+M2<-lm(data$hs_correct_raven~.,data = data)
+anova(lass_model,M2)
+
+
+#cereal and dair
+#fish and folic
+#fruits and physical activity
+#step-wise
+#laso and step-wise same dataet
+
+```
+
