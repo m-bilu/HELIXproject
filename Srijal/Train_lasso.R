@@ -1,11 +1,20 @@
-# 
-# Input data -> receive training and testing data
-# 
-# Usage:
-# train_and_test <- train_test(the_complete_dataset)
-# train <- train_and_test$train
-# test <- train_and_test$test
+# This script contains functions that were used to split the data and to 
+#perform Lasso
+#Packages needed
+# caret
+# glmnet
+
+
+
 train_test <- function(data) {
+  # Input : data you want to split
+  
+  
+  # Returns:
+  #data split into training and testing
+  # train_and_test <- train_test(the_complete_dataset)
+  # train <- train_and_test$train
+  # test <- train_and_test$test
   library(caret)
   set.seed(331)
   random_sample <- createDataPartition(data$hs_correct_raven, p = 0.8, 
@@ -13,14 +22,16 @@ train_test <- function(data) {
   training_data  <- data[random_sample, ]
   testing_data <- data[-random_sample, ]
   list(train = training_data, test = testing_data)
+  return(training_data , testing_data )
 }
 
-# 
-# Input training dataset and all subset of covariates specific to the use case and receiving reduced covariates
-#
-# Usage:
-# reduced_covariates <- selection_lasso(train, covariates)
+
 selection_lasso <- function(train, covariates) {
+  # 
+  # Input: data, vector of covariates you want to run lasso on
+  #
+  # Returns:
+  # reduced_covariates <- selection_lasso(train, covariates)
   set.seed(331)
   library(glmnet)
   y <- train$hs_correct_raven
