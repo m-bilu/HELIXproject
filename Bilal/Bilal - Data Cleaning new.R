@@ -8,7 +8,7 @@ library(VIM)
 
 load("C:/Users/mbila/Downloads/exposome_NA.RData")
 
-data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_data_v2.csv')
+data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_data_v2.csv')
 
 
 
@@ -87,7 +87,7 @@ plot(wgtShort, dataShort[, 'hs_correct_raven']
 # are stored as numerical
 
 
-## --------------- CLEANING -------------- ##
+## --------------- CONVERTING CATEGORICAL COVARIATES -------------- ##
 
 
 ## Categorical Covariates labelled as numeric, Removing ID/X columns
@@ -127,18 +127,22 @@ dataSus <- na.omit(dataNumeric)[, whichSus]
 lapply(dataSus, range)
 
 # Columns in dataSus are labelled as numeric, but are actually categorical
-# SOLUTION: Replace numeric values with stringified versions to 
+# SOLUTION: Replace numeric values with factored versions to 
 #   convert vector into categorical
-dataStr <- lapply(dataSus, as.character)
 
 # After modification of data, columns will be added back to original data
 dataFinal <- data
 whichFix <- which(colnames(data) %in% colnames(dataSus))
 for (i in 1:ncol(data)) {
   if (i %in% whichFix) {
-    dataFinal[, i] <- as.character(dataFinal[, i])
+    dataFinal[, i] <- as.factor(dataFinal[, i])
   }
 }
+
+
+
+## --------------- CLEANING -------------- ##
+
 
 # --/ List-wise Deletion
 toDel <- c()
@@ -148,7 +152,7 @@ for (i in 1:nrow(dataFinal)) {
   }
 }
 dataFinalDel <- dataFinal[-toDel, ]
-write.csv(dataFinalDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v0.csv',
+write.csv(dataFinalDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v0.csv',
           row.names = FALSE)
 
 
@@ -205,10 +209,7 @@ for (colnum in 1:ncol(cleandataFinal)) {
 which(is.na(dataFinal)) # Should be non-zero vector
 which(is.na(cleandataFinal)) # Should be 0
 
-## Deleting weird X column (duplicate column of ID column):
-cleandataFinal <- cleandataFinal[, -1]
-
-write.csv(cleandataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v1.csv',
+write.csv(cleandataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v1.csv',
           row.names = FALSE)
 
 ## Double check if u have all covariates, should be 241 not 237 
@@ -229,18 +230,22 @@ write.csv(cleandataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Projec
 
 
 # --/ Multiple Imputation
-dataImp <- mice(dataFinal, m=5, method='lasso.norm')
+# https://www.section.io/engineering-education/predictive-mean-matching/#solving-for-missing-values-using-predictive-mean-matching
+  
+dataImp <- mice(dataFinal, m=5, method='pmm')
 summary(dataImp)
 
-# iterated values replacing NAs in hs_correct_raven dataset
+# Checking Imputations for each column
 dataImp$imp$hs_correct_raven
 
-dataF <- complete(dataImp, 1)
+## PICKING BEST COLUMN
+# For each imputed column, we replace column with
+# one of the 5, one with best imputation
 
-## Deleting weird X column (duplicate column of ID column):
-dataF <- dataF[, -1]
+# JUSTIFY CHOOSING 5
+dataF <- complete(dataImp, 5)
 
-write.csv(dataF, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v2.csv',
+write.csv(dataF, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v2.csv',
           row.names = FALSE)
 
 
@@ -252,6 +257,7 @@ write.csv(dataF, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_cl
 # Biasness of data?
 # Variance of data?
 # CHECK EMAIL
+# https://www.youtube.com/watch?v=xKs8TijvL8I
 
 
 
