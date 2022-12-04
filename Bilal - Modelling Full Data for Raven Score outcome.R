@@ -12,9 +12,10 @@
 ## Loading in models, final cleaned data
 ## NOTE: for final calculations, use final cleaned data 
 ##    (with proper cleaning strategy)
+library(ggplot2)
 
 load("C:/Users/mbila/Downloads/exposome_NA.RData")
-data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v2.csv')
+fulldata <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v2.csv')
 
 ################################ FORWARD Selection:
 ## Using fwd so we dont need to mention upper model
@@ -27,15 +28,28 @@ data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_dat
 
 ## IMPORTANT NOTE:
 ## Quadratic terms are only relevant for continuous covariates
-data_cont <- data[, which(sapply(data, is.numeric))]
-inputStr <- paste(' . + I(',colnames(data_cont)[colnames(data_cont)!='hs_correct_raven'],"^2) +", collapse='') 
+fulldata_cont <- fulldata[, which(sapply(fulldata, is.numeric))]
+inputStr <- paste(' I(', colnames(fulldata_cont)[colnames(fulldata_cont)!='hs_correct_raven'] , "^2) +", collapse='') 
 
 # Defining worst/best model for step function
-M0 <- lm(data$hs_correct_raven ~ 1, data = fulldata)
-Mfull <- lm(hs_correct_raven ~ substr(inputStr, 1, nchar(inputStr)-1), data)
+M0 <- lm(hs_correct_raven ~ 1, data = fulldata)
+Mfull <- lm(hs_correct_raven ~ ., data = fulldata)
 
-## LEVEL 1: Main effects only
-system.time({
+## LEVEL 1: Main effects and quadratics
+system.time({ 
+  
+  Mfwdmain <- step(object = M0, # base model
+               scope = list(lower = M0, upper = Mfull),
+               trace = 1, # trace prints out information
+               direction = "forward")
+  
+})
+
+Mfull <- lm(formula = as.formula(paste('hs_correct_raven ~ . + ', substr(inputStr, 1, nchar(inputStr)-1))), data = fulldata)
+
+## LEVEL 2: Main effects and quadratics
+system.time({ 
+  
   Mfwd <- step(object = M0, # base model
                scope = list(lower = M0, upper = Mfull),
                trace = 1, # trace prints out information
@@ -43,11 +57,55 @@ system.time({
   
 })
 
-length(unique(rownames(summary(Mfwd)$coefficients))) # 84 unique covs in full
+length(unique(rownames(summary(Mfwd)$coefficients))) # 96, 84 + 12 unique covs in full
 
 ## Judging Quality of Data
 
-## If 
+## If this current model can predict well, we good, no need to add interactions
+summary(Mfwdmain)$r.squared
+summary(Mfwd)$r.squared
+
+# Which covariates are not in Mfwd but are in Mfwdmain
+setdiff(rownames(summary(Mfwdmain)$coefficients), rownames(summary(Mfwd)$coefficients))
+
+# Vice Versa - Only quadratic terms
+setdiff(rownames(summary(Mfwd)$coefficients), rownames(summary(Mfwdmain)$coefficients))
+
+# Graphs for interaction terms:
+# Aania Looking through lifestyle covs, remove then graph
+lifeStyle <- codebook[codebook$family=='Lifestyle', 'variable_name']
+lifeStyle <- c(lifeStyle, 'hs_correct_raven')
+lifeStyleInd <- which(colnames(data) %in% lifeStyle)
+dataNoLife <- data[, -lifeStyleInd]
+
+size <- 3
+par(mfrow = c(size, size))
+for (i in 1:size*size) {
+  as.factor(dataNoLife[, i])
+  barplot(data$hs_correct_raven~dataNoLife[, i], 
+          xlab=colnames(dataNoLife)[i],
+          ylab='Raven Score')
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
