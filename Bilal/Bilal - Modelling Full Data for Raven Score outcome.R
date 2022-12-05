@@ -195,14 +195,33 @@ subj <- rbind(subj, add)
 
 
 #### Let's print cov descriptions
-codebook[which(codebook$family != 'Lifestyle'), 'description']
+listref <- codebook[which(codebook$family != 'Lifestyle'), c('description')]
+list <- as.character(codebook[which(codebook$family != 'Lifestyle'), c('variable_name')])
 # blood content during pregnancy may be connected
-inter1 <- dataNoLife[, 1:4]
+inter1 <- dataNoLife[, list[1:4]]
 # blood content during hs test may be connected
-inter2 <- dataNoLife[, c(5:16, 26)]
-# transport mode lines, mode stops, building/connectivity density
-inter3 <- dataNoLife[, c(17:22, 24)]
-# 
+inter2 <- dataNoLife[, list[5:16]]
+# transport mode lines, mode stops, building/connectivity density during preg
+inter3 <- dataNoLife[, list[c(17:30, 176:178)]]
+# transport mode lines, mode stops, building/connectivity density after preg
+inter4 <- dataNoLife[, list[c(31:40, 179:180)]]
+# Concentration of content in child, mother
+inter5 <- dataNoLife[, list[c(41:65, 181:183)]]
+# Weather measurements during preg/month/day before at home
+inter6 <- dataNoLife[, list[c(66:77)]]
+# bluespace, greenspace, vegetation
+inter7 <- dataNoLife[, list[c(78:86)]]
+# Adjusted for lipids/creatine (various chemicals and compounds)
+inter8 <- dataNoLife[, list[c(87:120)]]
+# Sulfates in mother/child ## TOO BIG
+inter9 <- dataNoLife[, list[c(121:166)]]
+# Social Standings
+inter10 <- dataNoLife[, list[c(167:175, 193:195)]]
+# Status about birth, family
+inter11 <- dataNoLife[, list[c(176:196)]]
+
+# Now on all subsets of covariates with possible interactions, 
+# let's plot interactions
 
 
 
