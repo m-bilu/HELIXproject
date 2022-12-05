@@ -112,20 +112,60 @@ test_data<-read.csv('Data/test.csv')
 test_data<-subset(test_data, select = -c(X,ID) )
 test_data<-test_data[loc_preg]
 
-predict(lm_stepwise,data = test_data)
-mean((test_data$hs_correct_raven-predict(lm_stepwise))^2)
-# 50.52889
+predict(lm_stepwise, test_data, type="response")
+mean((test_data$hs_correct_raven-predict(lm_stepwise, test_data, type="response")
+)^2)
 
-predict(lm_lasso,data = test_data)
-mean((test_data$hs_correct_raven-predict(lm_lasso))^2)
-#52.99141
 
-predict(lm_lasso_inter,data = test_data)
-mean((test_data$hs_correct_raven-predict(lm_lasso_inter))^2)
+data_mod <- data.frame(Predicted = predict(lm_stepwise, test_data, type="response"),  # Create data for ggplot2
+                       Observed = test_data$hs_correct_raven)
+
+ggplot(data_mod,                                     # Draw plot using ggplot2 package
+       aes(x = Predicted,
+           y = Observed)) +
+  geom_point() +
+  geom_abline(intercept = 0,
+              slope = 1,
+              color = "red",
+              size = 2)
+
+data_mod2 <- data.frame(Predicted = predict(lm_lasso,test_data,type = "response"),  # Create data for ggplot2
+                       Observed = test_data$hs_correct_raven)
+
+ggplot(data_mod2,                                     # Draw plot using ggplot2 package
+       aes(x = Predicted,
+           y = Observed)) +
+  geom_point() +
+  geom_abline(intercept = 0,
+              slope = 1,
+              color = "red",
+              size = 2)
+
+
+
+data_mod3 <- data.frame(Predicted = predict(lm_lasso_inter,test_data,type = "response"),  # Create data for ggplot2
+                        Observed = test_data$hs_correct_raven)
+
+ggplot(data_mod3,                                     # Draw plot using ggplot2 package
+       aes(x = Predicted,
+           y = Observed)) +
+  geom_point() +
+  geom_abline(intercept = 0,
+              slope = 1,
+              color = "red",
+              size = 2)
 #79.90624
+data_mod3 <- data.frame(Predicted = predict(lm_stepwise_inter,test_data,type = "response"),  # Create data for ggplot2
+                        Observed = test_data$hs_correct_raven)
 
-predict(lm_stepwise_inter,data = test_data)
-mean((test_data$hs_correct_raven-predict(lm_stepwise_inter))^2)
+ggplot(data_mod3,                                     # Draw plot using ggplot2 package
+       aes(x = Predicted,
+           y = Observed)) +
+  geom_point() +
+  geom_abline(intercept = 0,
+              slope = 1,
+              color = "red",
+              size = 2)
 #55.99693
 
 
