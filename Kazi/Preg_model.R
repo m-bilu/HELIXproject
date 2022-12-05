@@ -129,6 +129,12 @@ ggplot(data_mod,                                     # Draw plot using ggplot2 p
               color = "red",
               size = 2)
 
+mean((test_data$hs_correct_raven - predict(lm_stepwise,test_data,type = "response")) ^ 2)
+
+#32.26023
+
+
+###
 data_mod2 <- data.frame(Predicted = predict(lm_lasso,test_data,type = "response"),  # Create data for ggplot2
                        Observed = test_data$hs_correct_raven)
 
@@ -141,8 +147,10 @@ ggplot(data_mod2,                                     # Draw plot using ggplot2 
               color = "red",
               size = 2)
 
+mean((test_data$hs_correct_raven - predict(lm_lasso,test_data,type = "response")) ^ 2)
+#31.25184
 
-
+####
 data_mod3 <- data.frame(Predicted = predict(lm_lasso_inter,test_data,type = "response"),  # Create data for ggplot2
                         Observed = test_data$hs_correct_raven)
 
@@ -154,11 +162,11 @@ ggplot(data_mod3,                                     # Draw plot using ggplot2 
               slope = 1,
               color = "red",
               size = 2)
-#79.90624
-data_mod3 <- data.frame(Predicted = predict(lm_stepwise_inter,test_data,type = "response"),  # Create data for ggplot2
+###
+data_mod4 <- data.frame(Predicted = predict(lm_stepwise_inter,test_data,type = "response"),  # Create data for ggplot2
                         Observed = test_data$hs_correct_raven)
 
-ggplot(data_mod3,                                     # Draw plot using ggplot2 package
+ggplot(data_mod4,                                     # Draw plot using ggplot2 package
        aes(x = Predicted,
            y = Observed)) +
   geom_point() +
