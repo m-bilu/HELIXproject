@@ -8,7 +8,7 @@ library(VIM)
 
 load("C:/Users/mbila/Downloads/exposome_NA.RData")
 
-data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_data_v2.csv')
+data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_data_v2.csv')
 
 
 
@@ -83,25 +83,76 @@ plot(wgtShort, dataShort[, 'hs_correct_raven']
 #   We need to prove MAR!!!!
 
 
+## BEFORE ANYTHING, must check for wierd catagorical covariates which 
+# are stored as numerical
+
+
+## --------------- CONVERTING CATEGORICAL COVARIATES -------------- ##
+
+
+## Categorical Covariates labelled as numeric, Removing ID/X columns
+if (length(which(colnames(data) == c('X', 'ID'))) != 0) {
+  data <- data[, -which(colnames(data) == c('X', 'ID'))]
+}
+
+# HELPER - Checking if function is true for all elements in a vector
+floorCheck <- function(x) {
+  for (i in 1:length(x)) {
+    if (floor(x[i]) != x[i]) {
+      return (FALSE)
+    }
+  }
+  return (TRUE)
+}
+
+whichNumeric <- c()
+for (i in 1:ncol(data)) {
+  vec <- data[, i]
+  if (is.numeric(vec)) {
+    whichNumeric <- c(whichNumeric, i)
+  }
+}
+dataNumeric <- data[, whichNumeric]
+whichSus <- c()
+for (i in 1:ncol(dataNumeric)) {
+  vec <- dataNumeric[, i]
+  vecNoNA <- na.omit(vec)
+  if (floorCheck(vecNoNA)) {
+    whichSus <- c(whichSus, i)
+  }
+}
+dataSus <- na.omit(dataNumeric)[, whichSus]
+
+# Ranges for each suspicious column
+lapply(dataSus, range)
+
+# Columns in dataSus are labelled as numeric, but are actually categorical
+# SOLUTION: Replace numeric values with factored versions to 
+#   convert vector into categorical
+
+# After modification of data, columns will be added back to original data
+dataFinal <- data
+whichFix <- which(colnames(data) %in% colnames(dataSus))
+for (i in 1:ncol(data)) {
+  if (i %in% whichFix) {
+    dataFinal[, i] <- as.factor(dataFinal[, i])
+  }
+}
+
+
 
 ## --------------- CLEANING -------------- ##
 
 
-
-
-
-
-
-
 # --/ List-wise Deletion
 toDel <- c()
-for (i in 1:nrow(data)) {
-  if (length(which(is.na(data[i, ]))) > 0) {
+for (i in 1:nrow(dataFinal)) {
+  if (length(which(is.na(dataFinal[i, ]))) > 0) {
     toDel <- c(toDel, i)
   }
 }
-dataDel <- data[-toDel, ]
-write.csv(dataDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v0.csv',
+dataFinalDel <- dataFinal[-toDel, ]
+write.csv(dataFinalDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v0.csv',
           row.names = FALSE)
 
 
@@ -119,17 +170,17 @@ write.csv(dataDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_
 
 # --/ Mean/Mode Imputation
 #### STEP 1: Acquiring column means/modes
-modes <- rep(0, ncol(data))
+modes <- rep(0, ncol(dataFinal))
 
 getmode <- function(v) {
   unique(v)[which.max(tabulate(match(v, unique(v))))]
 }
 
-for (col in 1:ncol(data)) {
+for (col in 1:ncol(dataFinal)) {
   curmode <- NULL
   
   ## Now, vec has no null values. Calculate and assign means.
-  vec <- data[, col]
+  vec <- dataFinal[, col]
   
   if (is.numeric(vec)) { 
     curmode <- mean(vec, na.rm = TRUE)
@@ -142,26 +193,23 @@ for (col in 1:ncol(data)) {
 ## Now, modes is complete
 
 #### STEP 2: Assigning all NA's to same node value
-cleandata <- data
+cleandataFinal <- dataFinal
 
-for (colnum in 1:ncol(cleandata)) {
-  col <- cleandata[, colnum]
+for (colnum in 1:ncol(cleandataFinal)) {
+  col <- cleandataFinal[, colnum]
   for (rownum in 1:length(col)) {
     if (is.na(col[rownum])) {
-      cleandata[rownum, colnum] <- modes[colnum]
+      cleandataFinal[rownum, colnum] <- modes[colnum]
     }
   }
 }
 
 ## Now, all NA's within one column hold same mode value
 ## Sanity check:
-which(is.na(data)) # Should be non-zero vector
-which(is.na(cleandata)) # Should be 0
+which(is.na(dataFinal)) # Should be non-zero vector
+which(is.na(cleandataFinal)) # Should be 0
 
-## Deleting weird X column (duplicate column of ID column):
-cleandata <- cleandata[, -1]
-
-write.csv(cleandata, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v1.csv',
+write.csv(cleandataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v1.csv',
           row.names = FALSE)
 
 ## Double check if u have all covariates, should be 241 not 237 
@@ -182,18 +230,22 @@ write.csv(cleandata, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/ful
 
 
 # --/ Multiple Imputation
-dataImp <- mice(data, m=5, method='lasso.norm')
+# https://www.section.io/engineering-education/predictive-mean-matching/#solving-for-missing-values-using-predictive-mean-matching
+  
+dataImp <- mice(dataFinal, m=5, method='pmm')
 summary(dataImp)
 
-# iterated values replacing NAs in hs_correct_raven dataset
+# Checking Imputations for each column
 dataImp$imp$hs_correct_raven
 
-dataFinal <- complete(dataImp, 1)
+## PICKING BEST COLUMN
+# For each imputed column, we replace column with
+# one of the 5, one with best imputation
 
-## Deleting weird X column (duplicate column of ID column):
-dataFinal <- dataFinal[, -1]
+# JUSTIFY CHOOSING 5
+dataF <- complete(dataImp, 5)
 
-write.csv(dataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v2.csv',
+write.csv(dataF, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v2.csv',
           row.names = FALSE)
 
 
@@ -205,6 +257,7 @@ write.csv(dataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/ful
 # Biasness of data?
 # Variance of data?
 # CHECK EMAIL
+# https://www.youtube.com/watch?v=xKs8TijvL8I
 
 
 

@@ -1,0 +1,362 @@
+	Full	Lasso	Step-wise	Interactions Lasso	Interactions Stepwise
+(Intercept)	24.535**	23.704**	27.827***	-303.079*	30.562**
+	(8.098)	(7.948)	(1.928)	(137.326)	(9.334)
+e3_alcpreg_yn_None	-1.386	-1.407		411.526**	
+	(0.944)	(0.940)		(134.894)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9]	4.074**	4.042**	3.811**	-133.051	-4.162
+	(1.460)	(1.452)	(1.362)	(201.817)	(9.677)
+h_cereal_preg_Ter: (9,27.3]/(0,9]	1.640	1.648	1.349	-15.859	-2.062
+	(1.024)	(1.018)	(0.994)	(111.809)	(8.887)
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1]	-1.767	-1.775		737.590***	
+	(1.461)	(1.419)		(200.667)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1]	-1.388	-1.257		518.044***	
+	(1.338)	(1.318)		(105.481)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25]	-1.084	-1.030	-0.879	215.422*	-6.802
+	(1.969)	(1.959)	(1.902)	(103.960)	(8.738)
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25]	2.281	2.358	2.612	-38.266	-2.736
+	(2.185)	(2.173)	(2.108)	(140.307)	(8.925)
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9]	0.634	0.694		-239.594**	
+	(1.178)	(1.162)		(69.173)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9]	1.712	1.660		-361.250**	
+	(1.191)	(1.178)		(105.798)	
+h_folic_t1_None	-2.110*	-2.160*	-1.801*	150.051*	11.321*
+	(0.980)	(0.949)	(0.903)	(56.516)	(4.818)
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]	6.962	7.157		47.112	
+	(6.542)	(6.459)		(61.320)	
+h_fruit_preg_Ter: (18.2,Inf]/(0,0.6]	8.127	8.283		-82.498*	
+	(6.512)	(6.465)		(32.484)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5]	-2.358	-2.471	-2.176	633.538*	3.445
+	(1.967)	(1.946)	(1.791)	(237.031)	(6.873)
+h_legume_preg_Ter: (2,Inf]/(0,0.5]	-4.127*	-4.122*	-4.045*	-31.576	-4.272
+	(1.741)	(1.724)	(1.593)	(26.347)	(2.842)
+h_meat_preg_Ter: (10,Inf]/(0,6.5]	-1.179	-1.142		0.413	
+	(1.152)	(1.137)		(23.957)	
+h_meat_preg_Ter: (6.5,10]/(0,6.5]	0.158	0.103		-148.189	
+	(1.188)	(1.177)		(99.429)	
+h_pamod_t3_None: Often	0.374	0.494		-36.657	
+	(2.264)	(2.246)		(38.968)	
+h_pamod_t3_None: Sometimes	1.815	1.965		-48.917	
+	(2.369)	(2.347)		(28.820)	
+h_pamod_t3_None: Very Often	-0.046	0.100		-65.609**	
+	(2.249)	(2.227)		(23.340)	
+h_pavig_t3_None: Low/High	-2.404	-2.317		412.109***	
+	(2.472)	(2.458)		(102.628)	
+h_pavig_t3_None: Medium/High	-2.923	-2.842		481.334***	
+	(2.593)	(2.578)		(113.400)	
+h_veg_preg_Ter: (16.5,Inf]/(0,8.8]	-0.583				
+	(1.401)				
+h_veg_preg_Ter: (8.8,16.5]/(0,8.8]	-0.663				
+	(1.015)				
+e3_alcpreg_yn_None x h_cereal_preg_Ter: (27.3,Inf]/(0,9]				-14.839	
+				(10.949)	
+e3_alcpreg_yn_None x h_cereal_preg_Ter: (9,27.3]/(0,9]				4.345	
+				(4.141)	
+e3_alcpreg_yn_None x h_dairy_preg_Ter: (17.1,27.1]/(0,17.1]				21.966	
+				(12.746)	
+e3_alcpreg_yn_None x h_dairy_preg_Ter: (27.1,Inf]/(0,17.1]				18.804	
+				(13.258)	
+e3_alcpreg_yn_None x h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25]				-192.496*	
+				(89.540)	
+e3_alcpreg_yn_None x h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25]				-201.131*	
+				(88.983)	
+e3_alcpreg_yn_None x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				-7.470	
+				(5.228)	
+e3_alcpreg_yn_None x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				-8.316	
+				(5.518)	
+e3_alcpreg_yn_None x h_folic_t1_None				-5.798	
+				(4.582)	
+e3_alcpreg_yn_None x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-10.092	
+				(5.658)	
+e3_alcpreg_yn_None x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-10.945	
+				(14.372)	
+e3_alcpreg_yn_None x h_legume_preg_Ter: (2,Inf]/(0,0.5]				1.696	
+				(11.728)	
+e3_alcpreg_yn_None x h_meat_preg_Ter: (10,Inf]/(0,6.5]				7.583	
+				(6.485)	
+e3_alcpreg_yn_None x h_meat_preg_Ter: (6.5,10]/(0,6.5]				12.790*	
+				(5.013)	
+e3_alcpreg_yn_None x h_pamod_t3_None: Often				5.429	
+				(11.887)	
+e3_alcpreg_yn_None x h_pamod_t3_None: Sometimes				15.365	
+				(11.933)	
+e3_alcpreg_yn_None x h_pamod_t3_None: Very Often				7.032	
+				(11.179)	
+e3_alcpreg_yn_None x h_pavig_t3_None: Low/High				-234.202***	
+				(53.953)	
+e3_alcpreg_yn_None x h_pavig_t3_None: Medium/High				-231.334***	
+				(54.941)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_dairy_preg_Ter: (17.1,27.1]/(0,17.1]				-48.765*	
+				(22.572)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_dairy_preg_Ter: (17.1,27.1]/(0,17.1]				-38.491*	
+				(14.311)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_dairy_preg_Ter: (27.1,Inf]/(0,17.1]				-62.024*	
+				(24.956)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_dairy_preg_Ter: (27.1,Inf]/(0,17.1]				-28.797*	
+				(14.013)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25]				209.659	11.474
+				(139.224)	(8.974)
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25]				270.166	8.136
+				(142.422)	(8.581)
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25]				182.039	12.035
+				(133.819)	(8.866)
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25]				268.609	7.638
+				(143.257)	(8.756)
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				-49.120*	
+				(19.342)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				5.778	
+				(6.136)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				-42.683	
+				(22.495)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				-0.184	
+				(6.409)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_folic_t1_None				-59.319*	-8.474*
+				(28.627)	(4.069)
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_folic_t1_None				0.135	-8.154***
+				(3.765)	(2.054)
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				38.852*	
+				(18.227)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				21.623***	
+				(5.916)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-9.357	-1.367
+				(28.210)	(6.377)
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				26.340**	-0.945
+				(8.112)	(2.556)
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_legume_preg_Ter: (2,Inf]/(0,0.5]				29.274	1.166
+				(21.952)	(5.042)
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				19.262	
+				(12.376)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				-5.387	
+				(5.250)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				-20.021	
+				(11.596)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				-14.169*	
+				(6.254)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_pamod_t3_None: Often				68.320	
+				(40.873)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_pamod_t3_None: Often				-1.568	
+				(3.588)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_pamod_t3_None: Sometimes				100.244*	
+				(44.124)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_pamod_t3_None: Sometimes				3.342	
+				(4.050)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_pamod_t3_None: Very Often				119.199*	
+				(50.933)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_pavig_t3_None: Low/High				-93.531*	
+				(44.030)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_pavig_t3_None: Low/High				-240.767***	
+				(52.928)	
+h_cereal_preg_Ter: (27.3,Inf]/(0,9] x h_pavig_t3_None: Medium/High				-143.007*	
+				(55.721)	
+h_cereal_preg_Ter: (9,27.3]/(0,9] x h_pavig_t3_None: Medium/High				-230.229***	
+				(53.368)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25]				-445.350**	
+				(133.733)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25]				-131.061*	
+				(51.547)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25]				-438.910**	
+				(134.753)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25]				-124.049*	
+				(52.773)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				-64.786***	
+				(14.915)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				-58.966***	
+				(14.491)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				-53.746**	
+				(15.067)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				-44.409**	
+				(14.062)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_folic_t1_None				-30.920*	
+				(11.735)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_folic_t1_None				-37.485**	
+				(11.819)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-2.476	
+				(8.632)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-31.866**	
+				(10.722)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-14.352	
+				(20.764)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-98.691**	
+				(27.723)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_legume_preg_Ter: (2,Inf]/(0,0.5]				-10.019	
+				(19.103)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_legume_preg_Ter: (2,Inf]/(0,0.5]				-40.256*	
+				(19.504)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				25.912*	
+				(12.463)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				17.296	
+				(9.649)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				21.206*	
+				(9.678)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				3.404	
+				(7.728)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_pamod_t3_None: Often				6.797	
+				(20.938)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_pamod_t3_None: Often				-9.700	
+				(7.522)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_pamod_t3_None: Sometimes				11.588	
+				(25.206)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_pamod_t3_None: Sometimes				-26.643*	
+				(12.346)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_pamod_t3_None: Very Often				24.622	
+				(18.131)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_pavig_t3_None: Low/High				-246.593***	
+				(58.637)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_pavig_t3_None: Low/High				-256.658***	
+				(60.911)	
+h_dairy_preg_Ter: (17.1,27.1]/(0,17.1] x h_pavig_t3_None: Medium/High				-243.810***	
+				(58.218)	
+h_dairy_preg_Ter: (27.1,Inf]/(0,17.1] x h_pavig_t3_None: Medium/High				-263.727***	
+				(62.796)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				99.781*	
+				(40.133)	
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_fish_preg_Ter: (1.9,4.1]/(0,1.9]				81.985	
+				(40.376)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				347.715**	
+				(117.617)	
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_fish_preg_Ter: (4.1,Inf]/(0,1.9]				335.361**	
+				(117.658)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_folic_t1_None				-58.135	-4.718
+				(41.668)	(6.437)
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_folic_t1_None				-55.289	-4.867
+				(42.327)	(6.858)
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-148.928*	
+				(68.066)	
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-156.118*	
+				(68.492)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-681.064**	-1.269
+				(239.858)	(7.372)
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-684.153**	-2.813
+				(241.684)	(7.461)
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				-65.175**	
+				(22.290)	
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				-72.062**	
+				(23.087)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				165.281	
+				(99.852)	
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				168.066	
+				(100.029)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_pamod_t3_None: Often				-156.209***	
+				(42.710)	
+h_fastfood_preg_Ter: (0.83,Inf]/(0,0.25] x h_pamod_t3_None: Often				14.404	
+				(21.724)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_pamod_t3_None: Sometimes				-175.596***	
+				(43.807)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_pamod_t3_None: Very Often				-178.491***	
+				(44.846)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_pavig_t3_None: Low/High				-91.942	
+				(72.200)	
+h_fastfood_preg_Ter: (0.25,0.83]/(0,0.25] x h_pavig_t3_None: Medium/High				-100.357	
+				(72.460)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_folic_t1_None				-2.531	
+				(5.272)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_folic_t1_None				0.769	
+				(6.051)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-1.706	
+				(6.929)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				18.091*	
+				(7.343)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-35.417	
+				(24.989)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-14.912	
+				(23.826)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_legume_preg_Ter: (2,Inf]/(0,0.5]				-30.338	
+				(21.626)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_legume_preg_Ter: (2,Inf]/(0,0.5]				-29.607	
+				(23.464)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				23.537**	
+				(7.310)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				17.869*	
+				(8.543)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				3.221	
+				(5.876)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				-9.551	
+				(7.646)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_pamod_t3_None: Often				215.537**	
+				(66.762)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_pamod_t3_None: Often				64.719**	
+				(23.076)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_pamod_t3_None: Sometimes				221.988**	
+				(64.863)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_pamod_t3_None: Sometimes				61.656*	
+				(24.361)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_pamod_t3_None: Very Often				225.369**	
+				(66.354)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_pamod_t3_None: Very Often				60.666*	
+				(23.198)	
+h_fish_preg_Ter: (1.9,4.1]/(0,1.9] x h_pavig_t3_None: Low/High				12.336	
+				(6.568)	
+h_fish_preg_Ter: (4.1,Inf]/(0,1.9] x h_pavig_t3_None: Low/High				17.109*	
+				(7.322)	
+h_folic_t1_None x h_fruit_preg_Ter: (0.6,18.2]/(0,0.6]				-10.404	
+				(6.303)	
+h_folic_t1_None x h_legume_preg_Ter: (0.5,2]/(0,0.5]				-48.373	
+				(33.822)	
+h_folic_t1_None x h_legume_preg_Ter: (2,Inf]/(0,0.5]				-56.016	
+				(30.197)	
+h_folic_t1_None x h_meat_preg_Ter: (10,Inf]/(0,6.5]				18.095**	
+				(5.097)	
+h_folic_t1_None x h_meat_preg_Ter: (6.5,10]/(0,6.5]				10.469	
+				(6.159)	
+h_folic_t1_None x h_pamod_t3_None: Often				-3.426	
+				(4.126)	
+h_folic_t1_None x h_pamod_t3_None: Sometimes				3.361	
+				(5.170)	
+h_folic_t1_None x h_pavig_t3_None: Low/High				-3.566	
+				(5.258)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_legume_preg_Ter: (0.5,2]/(0,0.5]				37.626	
+				(22.331)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_legume_preg_Ter: (2,Inf]/(0,0.5]				52.491*	
+				(22.516)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				-8.599	
+				(7.049)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				-17.147*	
+				(8.242)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_pamod_t3_None: Often				8.266	
+				(5.932)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_pamod_t3_None: Sometimes				31.698**	
+				(10.368)	
+h_fruit_preg_Ter: (0.6,18.2]/(0,0.6] x h_pavig_t3_None: Low/High				-9.070	
+				(6.916)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				38.080*	
+				(15.267)	
+h_legume_preg_Ter: (2,Inf]/(0,0.5] x h_meat_preg_Ter: (10,Inf]/(0,6.5]				40.107**	
+				(13.078)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				-15.871	
+				(18.767)	
+h_legume_preg_Ter: (2,Inf]/(0,0.5] x h_meat_preg_Ter: (6.5,10]/(0,6.5]				-2.093	
+				(13.614)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5] x h_pamod_t3_None: Often				-7.242	
+				(20.893)	
+h_legume_preg_Ter: (2,Inf]/(0,0.5] x h_pamod_t3_None: Often				-25.258	
+				(19.595)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5] x h_pamod_t3_None: Sometimes				27.730	
+				(22.190)	
+h_legume_preg_Ter: (2,Inf]/(0,0.5] x h_pamod_t3_None: Sometimes				-18.276	
+				(16.752)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5] x h_pavig_t3_None: Low/High				79.519**	
+				(24.493)	
+h_legume_preg_Ter: (2,Inf]/(0,0.5] x h_pavig_t3_None: Low/High				55.870*	
+				(23.556)	
+h_meat_preg_Ter: (10,Inf]/(0,6.5] x h_pamod_t3_None: Often				-0.216	
+				(7.532)	
+h_meat_preg_Ter: (6.5,10]/(0,6.5] x h_pamod_t3_None: Often				-9.795	
+				(6.677)	
+h_meat_preg_Ter: (10,Inf]/(0,6.5] x h_pamod_t3_None: Sometimes				-11.569	
+				(7.483)	
+h_meat_preg_Ter: (6.5,10]/(0,6.5] x h_pamod_t3_None: Sometimes				-3.684	
+				(7.178)	
+h_meat_preg_Ter: (10,Inf]/(0,6.5] x h_pavig_t3_None: Low/High				-0.008	
+				(6.546)	
+h_meat_preg_Ter: (6.5,10]/(0,6.5] x h_pavig_t3_None: Low/High				1.581	
+				(5.850)	
+h_pamod_t3_None: Often x h_pavig_t3_None: Low/High				-0.555	
+				(5.221)	
+h_pamod_t3_None: Sometimes x h_pavig_t3_None: Low/High				2.286	
+				(7.104)	
+h_legume_preg_Ter: (0.5,2]/(0,0.5] x h_folic_t1_None					-7.940
+					(5.009)
+h_legume_preg_Ter: (2,Inf]/(0,0.5] x h_folic_t1_None					-3.610
+					(4.789)
+R-squared	0.250	0.248	0.192	0.908	0.326
+BIC	1439.350	1429.207	1369.431	1811.300	1412.052
+AIC	1356.032	1352.554	1339.436	1224.741	1332.066
