@@ -1,7 +1,15 @@
 library(glmnet)
 library(Metrics)
-setwd("/Users/kazirahman/Library/CloudStorage/OneDrive-UniversityofWaterloo/3A/Stat331/Final Project")
+setwd("M:/NexusDesktop/stat331-finalproject")
 #load in data
+##loading new test and train data for everyone
+
+
+
+
+
+
+
 test_data<-read.csv("Data/test.csv")
 data<-read.csv('Data/train.csv')
 data<-subset(data, select = -c(X,ID) )
