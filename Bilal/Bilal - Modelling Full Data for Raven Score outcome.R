@@ -4,27 +4,214 @@
 
 ## Performing step-wise and modified elastic net (seperately) to calculate
 ##    best variable selection for hs_correct_raven response variable. Comparing
-##    both processes, gauging performance and deciding on final model
-##    before moving on to final Beta estimation with OLS, 
-##    model validation with leave-one-out cross val. Finally, deciding 
-##    NEXT STEPS (WHAT WE DO AFTER GETTING THIS MODEL ?!)
+##    both processes, gauging performance, eliminating high pval covariates,
+##    selecting covariates/interactions based on scatterplots 
+##    -->
+##    deciding on final model before moving on to final Beta estimation with OLS, 
+##    model validation with leave-one-out cross val.
 
 ## Loading in models, final cleaned data
 ## NOTE: for final calculations, use final cleaned data 
 ##    (with proper cleaning strategy)
+
+
+
+ ## ----------- Data Splitting into Train, Validate, Test ------------- ##
+
+
+## HELPER FUNCTION:
+train_test <- function(data) {
+  # Input : data you want to split
+  
+  
+  # Returns:
+  #data split into training and testing
+  # train_and_test <- train_test(the_complete_dataset)
+  # train <- train_and_test$train
+  # test <- train_and_test$test
+  library(caret)
+  set.seed(331)
+  random_sample <- createDataPartition(data$hs_correct_raven, p = 0.8, 
+                                       list = FALSE)
+  training_data  <- data[random_sample, ]
+  testing_data <- data[-random_sample, ]
+  list(train = training_data, test = testing_data)
+  return(training_data , testing_data )
+}
+
 library(ggplot2)
-
 load("C:/Users/mbila/Downloads/exposome_NA.RData")
-fulldata <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/full_clean_data_v2.csv')
+fulldata <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v2.csv')
 
-################################ FORWARD Selection:
+
+## SPLITTING DATA:
+split1 <- train_test(fulldata)
+
+# FINISH AFTER KAZI SPLITS DATA
+# CONTINUE WITH CODE
+
+
+
+ 
+ ## -------------- Subjective: Covariate Transformation --------------- ##
+
+
+
+# First, lets analyze the relationship in between outcome and covariates,
+#   lets find covariates that need transformation
+#   IE they have quadratic, logarithmic, etc. relationship with outcome
+
+# Graphs for interaction terms:
+# Aania Looking through lifestyle covs, remove then graph
+lifeStyle <- as.character(codebook[codebook$family=='Lifestyle', 'variable_name'])
+lifeStyle <- c(lifeStyle, 'hs_correct_raven')
+lifeStyleInd <- which(colnames(fulldata) %in% lifeStyle)
+dataNoLife <- fulldata[, -lifeStyleInd]
+
+size <- 3
+par(mfrow = c(size, size))
+par(mar = c(4, 4, 3, 2))
+
+plotTotal <- ceiling(ncol(dataNoLife)/(size*size)) # number of saved files
+plotNum <- 1
+
+
+pdf('C:/Users/mbila/Documents/STAT 331 Final Project/Bilal/outcomeGraphs/graph1.pdf')
+
+for (i in 1:ncol(dataNoLife)) {
+  
+  # IF categorical/discrete var, draw boxplot
+  if ((is.numeric(dataNoLife[, i]) == FALSE) 
+      || length(which(floor(dataNoLife[, i]) == dataNoLife[, i]))
+      == length(dataNoLife[, i])) {
+      
+    boxplot(fulldata$hs_correct_raven~dataNoLife[, i], 
+              ylab='Raven Score', 
+              xlab=colnames(dataNoLife)[i], 
+              main='Boxplot', ann=TRUE)
+    
+    # if continuous, draw scatterplot
+  } else {
+    
+    plot(fulldata$hs_correct_raven~dataNoLife[, i], 
+           ylab='Raven Score', 
+           xlab=colnames(dataNoLife)[i], 
+           main='Plot', ann=TRUE)
+  }
+  
+  if (i %% 3) {
+    dev.off()
+    pdf(paste('C:/Users/mbila/Documents/STAT 331 Final Project/Bilal/outcomeGraphs/graph', i, '.pdf'))
+  }
+}
+
+dev.off()
+
+## PDF Stored
+## List of subjective covs and transformation ideas
+
+subj <- data.frame('e3_yearbir_None', 'quadratic')
+names(subj) <- c('Covariate', 'Relationship')
+add <- data.frame('h_parity_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('h_parity_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_child_age_None', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_c_height_None', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_c_weight_None', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_pm25_yr_hs_h_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('h_accesspoints300_preg_Log', 'wierd')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('h_fdensity300_preg_Log', 'wierd')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_landuseshan300_h_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_landuseshan300_s_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('h_TEX_Log', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_cs_c_Log2', 'quadratic') # + 5 to remove 0 values for log
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('h_humidity_preg_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_KIDMED_None', 'quadratic') # COULD BE LOG
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('h_temperature_preg_None', 'quadratic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_hum_mt_hs_h_None', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_tm_mt_hs_h_None', 'logarithmic') # + 10
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_hum_wk_hs_h_None', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_tm_dy_hs_h_None', 'logarithmic')# + 20
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_tm_wk_hs_h_None', 'logarithmic')# + 10
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_pcb118_madj_Log2', 'logarithmic')# + 5
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_pcb170_madj_Log2', 'logarithmic') # + 5
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+add <- data.frame('hs_hm_pers_None', 'logarithmic')
+names(add) <- c('Covariate', 'Relationship')
+subj <- rbind(subj, add)
+
+# subj now holds the names and relationships of all covs that require transformation 
+
+
+
+
+
+  ## -------------------- Subjective: Cov Interaction --------------------- ##
+
+
+
+
+
+#### Let's print cov descriptions
+codebook[which(codebook$family != 'Lifestyle'), 'description']
+# blood content during pregnancy may be connected
+inter1 <- dataNoLife[, 1:4]
+# blood content during hs test may be connected
+inter2 <- dataNoLife[, c(5:16, 26)]
+# transport mode lines, mode stops, building/connectivity density
+inter3 <- dataNoLife[, c(17:22, 24)]
+# 
+
+
+
+  ## ------------------------- FORWARD Selection -------------------------- ##
+
+
 ## Using fwd so we dont need to mention upper model
 ## upper model would include all main effects and interactions,
-## that is 60000 covariates in one model.
-
-## Trick for including interaction terms in step function without 
-##    including them in lm model (which would take a while):
-##    https://stackoverflow.com/questions/22418116/adding-interaction-terms-to-step-aic-in-r
+## that is 56882 covariates in one model.
 
 ## IMPORTANT NOTE:
 ## Quadratic terms are only relevant for continuous covariates
@@ -38,55 +225,57 @@ Mfull <- lm(hs_correct_raven ~ ., data = fulldata)
 ## LEVEL 1: Main effects and quadratics
 system.time({ 
   
-  Mfwdmain <- step(object = M0, # base model
+  Mfwd1 <- step(object = M0, # base model
                scope = list(lower = M0, upper = Mfull),
                trace = 1, # trace prints out information
                direction = "forward")
   
 })
+
+length(unique(rownames(summary(Mfwd1)$coefficients))) # 85 unique covs in full
 
 Mfull <- lm(formula = as.formula(paste('hs_correct_raven ~ . + ', substr(inputStr, 1, nchar(inputStr)-1))), data = fulldata)
 
 ## LEVEL 2: Main effects and quadratics
 system.time({ 
   
-  Mfwd <- step(object = M0, # base model
+  Mfwd2 <- step(object = M0, # base model
                scope = list(lower = M0, upper = Mfull),
                trace = 1, # trace prints out information
                direction = "forward")
   
 })
 
-length(unique(rownames(summary(Mfwd)$coefficients))) # 96, 84 + 12 unique covs in full
+length(unique(rownames(summary(Mfwd2)$coefficients))) # 99, 85 + 14 unique covs in full
 
-## Judging Quality of Data
 
-## If this current model can predict well, we good, no need to add interactions
-summary(Mfwdmain)$r.squared
-summary(Mfwd)$r.squared
 
-# Which covariates are not in Mfwd but are in Mfwdmain
-setdiff(rownames(summary(Mfwdmain)$coefficients), rownames(summary(Mfwd)$coefficients))
+
+
+##---------------------- Judging Quality of Model ----------------------- ## 
+
+
+
+# Which covariates are not in Mfwd2 but are in Mfwd1
+setdiff(rownames(summary(Mfwd1)$coefficients), rownames(summary(Mfwd2)$coefficients))
 
 # Vice Versa - Only quadratic terms
-setdiff(rownames(summary(Mfwd)$coefficients), rownames(summary(Mfwdmain)$coefficients))
+setdiff(rownames(summary(Mfwd2)$coefficients), rownames(summary(Mfwd1)$coefficients))
 
-# Graphs for interaction terms:
-# Aania Looking through lifestyle covs, remove then graph
-lifeStyle <- codebook[codebook$family=='Lifestyle', 'variable_name']
-lifeStyle <- c(lifeStyle, 'hs_correct_raven')
-lifeStyleInd <- which(colnames(data) %in% lifeStyle)
-dataNoLife <- data[, -lifeStyleInd]
+## If this current model can predict well, we good, no need to add interactions
+summary(Mfwd1)$adj.r.squared
+summary(Mfwd2)$adj.r.squared
 
-size <- 3
-par(mfrow = c(size, size))
-for (i in 1:size*size) {
-  as.factor(dataNoLife[, i])
-  barplot(data$hs_correct_raven~dataNoLife[, i], 
-          xlab=colnames(dataNoLife)[i],
-          ylab='Raven Score')
-  
-}
+AIC(Mfwd1)
+AIC(Mfwd2)
+
+BIC(Mfwd1)
+BIC(Mfwd2)
+
+# MSPE  # COPY SRIJAN'S CODE
+
+
+
 
 
 
