@@ -1,6 +1,8 @@
 library(glmnet)
-setwd("M:/NexusDesktop/stat331-finalproject")
+library(Metrics)
+setwd("/Users/kazirahman/Library/CloudStorage/OneDrive-UniversityofWaterloo/3A/Stat331/Final Project")
 #load in data
+test_data<-read.csv("Data/test.csv")
 data<-read.csv('Data/train.csv')
 data<-subset(data, select = -c(X,ID) )
 #Checking for Nans
@@ -87,6 +89,61 @@ lm_stepwise_inter<-lm(validation_data$hs_correct_raven ~ (h_cereal_preg_Ter + h_
                   h_legume_preg_Ter + h_folic_t1_None)^2,data = validation_data)
 
 #comparing models
+#figure out between lasso and step-wise
+Rsquared_lasso<-summary(lm_lasso)$adj.r.squared
+Rsquared_stepwise<-summary(lm_stepwise)$adj.r.squared
+test_data<-subset(test_data, select = -c(X,ID) )
+test_data<-test_data[loc_preg]
+
+pred_lasso <- data.frame(actual=c(test_data$hs_correct_raven),
+                   predicted=c(predict(lm_lasso, test_data, type="response")))
+
+
+RMSE_lasso<-rmse(pred_lasso$actual, pred_lasso$predicted)
+
+
+
+pred_step_wise <- data.frame(actual=c(test_data$hs_correct_raven),
+                         predicted=c(predict(lm_stepwise, test_data, type="response")))
+
+
+RMSE_stepwise<-rmse(pred_step_wise$actual, pred_step_wise$predicted)
+
+################# Interactions ##############
+#e3_alcpreg_yn_None+h_cereal_preg_Ter+
+#  h_dairy_preg_Ter +h_fastfood_preg_Ter+
+#  h_fish_preg_Ter+ h_folic_t1_None+ 
+#  h_fruit_preg_Ter+h_legume_preg_Ter+ 
+#  h_meat_preg_Ter+
+#  h_pamod_t3_None+h_pavig_t3_None,data
+pd_inter <- aov(data = preg_data, 
+                hs_correct_raven~h_fastfood_preg_Ter*h_fish_preg_Ter)
+summary(pd_inter)
+
+interaction.plot(x.factor = preg_data$h_fish_preg_Ter, #x-axis variable
+                 trace.factor = preg_data$h_fastfood_preg_Ter, #variable for lines
+                 response = preg_data$hs_correct_raven, #y-axis variable
+                 fun = mean, #metric to plot
+                 ylab = "raven score",
+                 xlab = "cat",
+                 col = c("pink", "blue", "green",'black'),
+                 lty = 1, #line type
+                 lwd = 2, #line width
+                 trace.label = "Dairy")
+
+#cereal and dairy
+#legume and cereal
+#folic acid and fish
+#pavig and pamod has interaction
+#look into fruit and pamod
+#pavig and fruots no interaction
+#fish and meat no interaction
+#fast food and meat maybe
+#fast food and fish maybe
+
+
+
+##################
 #Adjusted R^2
 summary(lmfull)$adj.r.squared
 summary(lm_lasso)$adj.r.squared
