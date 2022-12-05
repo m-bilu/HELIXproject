@@ -162,12 +162,6 @@ write.csv(dataFinalDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/
 
 
 
-
-
-
-
-
-
 # --/ Mean/Mode Imputation
 #### STEP 1: Acquiring column means/modes
 modes <- rep(0, ncol(dataFinal))
