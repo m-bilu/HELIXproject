@@ -2,7 +2,21 @@ library(glmnet)
 library(ggplot2)
 library(grid)
 library(gtable)
-full_data<-read.csv('Data/full_clean_data_v2.csv')
+full_data<-read.csv('Data/life_data.csv')
+library(SmartEDA)
+##General Overview of the data
+library("GGally")
+library(tidyverse)
+library(DataExplorer)
+full_data %>%
+  create_report(
+    output_file = 'test',
+    output_dir = "/Users/kazirahman/Library/CloudStorage/OneDrive-UniversityofWaterloo/3A/Stat331/Final Project",
+    y = "hs_correct_raven",
+    report_title = "TITLE"
+  )
+
+
 
 
 

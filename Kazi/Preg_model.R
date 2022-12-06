@@ -1,18 +1,12 @@
 library(glmnet)
 library(Metrics)
-setwd("M:/NexusDesktop/stat331-finalproject")
+setwd("/Users/kazirahman/Library/CloudStorage/OneDrive-UniversityofWaterloo/3A/Stat331/Final Project")
 #load in data
 ##loading new test and train data for everyone
 
-
-
-
-
-
-
-test_data<-read.csv("Data/test.csv")
-data<-read.csv('Data/train.csv')
-data<-subset(data, select = -c(X,ID) )
+test_data<-read.csv("Data/test_final.csv")
+data<-read.csv('Data/train_final.csv')
+data<-subset(data, select = -c(X) )
 #Checking for Nans
 nan_count <-sapply(data, function(data) sum(length(which(is.na(data)))))
 nan_count <- data.frame(nan_count)
@@ -26,7 +20,7 @@ preg_data<-data[loc_preg]
 train_val <- function(data) {
   library(caret)
   set.seed(331)
-  random_sample <- createDataPartition(data$hs_correct_raven, p = 0.8, 
+  random_sample <- createDataPartition(data$hs_correct_raven, p = 0.5, 
                                        list = FALSE)
   training_data  <- data[random_sample, ]
   validation_data <- data[-random_sample, ]
@@ -34,6 +28,7 @@ train_val <- function(data) {
 }
 train_data<-train_val(preg_data)$train
 validation_data<-train_val(preg_data)$validation
+
 #we use train_data to do feature selection
 set.seed(331)
 #Lasso
@@ -68,12 +63,12 @@ lmfull <- lm(validation_data$hs_correct_raven ~ ., data=validation_data)
 #fitting to a constant
 lm<- lm(validation_data$hs_correct_raven ~ 1, data=validation_data)
 #Lasso
-lm_lasso<-lm(validation_data$hs_correct_raven~e3_alcpreg_yn_None+h_cereal_preg_Ter+
+lm_lasso<-lm(train_data$hs_correct_raven~e3_alcpreg_yn_None+h_cereal_preg_Ter+
              h_dairy_preg_Ter +h_fastfood_preg_Ter+
              h_fish_preg_Ter+ h_folic_t1_None+ 
              h_fruit_preg_Ter+h_legume_preg_Ter+ 
              h_meat_preg_Ter+
-             h_pamod_t3_None+h_pavig_t3_None,data = validation_data)
+             h_pamod_t3_None,data = train_data)
 #step-wise
 
 system.time({
@@ -81,8 +76,8 @@ system.time({
                 scope = list(lower = lm, upper = lmfull), 
                 direction = "both", trace = 1)
 })
-lm_stepwise<-lm(validation_data$hs_correct_raven ~ h_cereal_preg_Ter + h_fastfood_preg_Ter + 
-                  h_legume_preg_Ter + h_folic_t1_None,data = validation_data)
+lm_stepwise<-lm(validation_data$hs_correct_raven ~ h_cereal_preg_Ter + h_dairy_preg_Ter + 
+                  h_folic_t1_None + h_fruit_preg_Ter + h_legume_preg_Ter,data = validation_data)
 
 #interactions
 #lasso coeff
@@ -100,8 +95,10 @@ lm_stepwise_inter<-lm(validation_data$hs_correct_raven ~ (h_cereal_preg_Ter + h_
 #figure out between lasso and step-wise
 Rsquared_lasso<-summary(lm_lasso)$adj.r.squared
 Rsquared_stepwise<-summary(lm_stepwise)$adj.r.squared
-test_data<-subset(test_data, select = -c(X,ID) )
+test_data<-subset(test_data, select = -c(X))
 test_data<-test_data[loc_preg]
+
+
 
 pred_lasso <- data.frame(actual=c(test_data$hs_correct_raven),
                    predicted=c(predict(lm_lasso, test_data, type="response")))
@@ -124,12 +121,97 @@ RMSE_stepwise<-rmse(pred_step_wise$actual, pred_step_wise$predicted)
 #  h_fruit_preg_Ter+h_legume_preg_Ter+ 
 #  h_meat_preg_Ter+
 #  h_pamod_t3_None+h_pavig_t3_None,data
+
+lm_lasso_inter<-lm(validation_data$hs_correct_raven~(e3_alcpreg_yn_None+h_cereal_preg_Ter+
+                                                       h_dairy_preg_Ter +h_fastfood_preg_Ter+
+                                                       h_fish_preg_Ter+ h_folic_t1_None+ 
+                                                       h_fruit_preg_Ter+h_legume_preg_Ter+ 
+                                                       h_meat_preg_Ter+
+                                                       h_pamod_t3_None+h_pavig_t3_None)^2,data = validation_data)
+
+
+loc<-c("e3_alcpreg_yn_None"             ,               "h_cereal_preg_Ter",                                 
+       "h_dairy_preg_Ter"             ,               "h_dairy_preg_Ter"  ,                              
+       "h_fastfood_preg_Ter"   ,                  "h_fastfood_preg_Ter" ,                            
+        "h_fish_preg_Ter"      ,                    "h_fish_preg_Ter" ,                                 
+       "h_folic_t1_None"                ,                "h_meat_preg_Ter",                                   
+       "h_pavig_t3_None"             ,                  "h_pavig_t3_None")
+
+#trying to make a new dataset to deal with interactions
+dd<-model.matrix(~(e3_alcpreg_yn_None+h_cereal_preg_Ter+
+                     h_dairy_preg_Ter +h_fastfood_preg_Ter+
+                     h_fish_preg_Ter+ h_folic_t1_None+ 
+                     h_fruit_preg_Ter+h_legume_preg_Ter+ 
+                     h_meat_preg_Ter+
+                     h_pamod_t3_None+h_pavig_t3_None),preg_data)
+
+
+
+dd<-data.frame(dd)
+dd$aclpregcereal9<-as.factor(as.character(dd$e3_alcpreg_yn_None*dd$h_cereal_preg_Ter.9.27.3.))
+
+
+listofinteractions<-c("e3_alcpreg_yn_None:h_cereal_preg_Ter(9,27.3]"       ,        "e3_alcpreg_yn_None:h_dairy_preg_Ter(17.1,27.1]" ,           
+                       "e3_alcpreg_yn_None:h_dairy_preg_Ter(27.1,Inf]"      ,        "e3_alcpreg_yn_None:h_fish_preg_Ter(1.9,4.1]",               
+                       "e3_alcpreg_yn_None:h_fish_preg_Ter(4.1,Inf]"         ,       "e3_alcpreg_yn_None:h_folic_t1_None" ,                       
+                       "e3_alcpreg_yn_None:h_legume_preg_Ter(0.5,2]"          ,      "e3_alcpreg_yn_None:h_legume_preg_Ter(2,Inf]",               
+                       "e3_alcpreg_yn_None:h_meat_preg_Ter(10,Inf]"            ,     "e3_alcpreg_yn_None:h_pavig_t3_NoneLow" ,                    
+                       "e3_alcpreg_yn_None:h_pavig_t3_NoneMedium"               ,    "h_cereal_preg_Ter(9,27.3]:h_dairy_preg_Ter(17.1,27.1]" ,    
+                       "h_cereal_preg_Ter(9,27.3]:h_dairy_preg_Ter(27.1,Inf]"    ,   "h_cereal_preg_Ter(27.3,Inf]:h_fastfood_preg_Ter(0.25,0.83]",
+                       "h_cereal_preg_Ter(9,27.3]:h_fastfood_preg_Ter(0.25,0.83]" ,  "h_cereal_preg_Ter(27.3,Inf]:h_fastfood_preg_Ter(0.83,Inf]" ,
+                       "h_cereal_preg_Ter(9,27.3]:h_fastfood_preg_Ter(0.83,Inf]"   , "h_cereal_preg_Ter(9,27.3]:h_fish_preg_Ter(1.9,4.1]"        ,
+                       "h_cereal_preg_Ter(27.3,Inf]:h_fish_preg_Ter(4.1,Inf]"       ,"h_cereal_preg_Ter(9,27.3]:h_fish_preg_Ter(4.1,Inf]"        ,
+                       "h_cereal_preg_Ter(27.3,Inf]:h_folic_t1_None"                ,"h_cereal_preg_Ter(9,27.3]:h_folic_t1_None"                 ,
+                       "h_cereal_preg_Ter(27.3,Inf]:h_meat_preg_Ter(10,Inf]"        ,"h_cereal_preg_Ter(9,27.3]:h_meat_preg_Ter(6.5,10]"  ,       
+                       "h_cereal_preg_Ter(27.3,Inf]:h_pamod_t3_NoneOften"           ,"h_cereal_preg_Ter(9,27.3]:h_pamod_t3_NoneOften"  ,          
+                       "h_cereal_preg_Ter(9,27.3]:h_pamod_t3_NoneSometimes"         ,"h_cereal_preg_Ter(27.3,Inf]:h_pavig_t3_NoneLow" ,           
+                       "h_cereal_preg_Ter(27.3,Inf]:h_pavig_t3_NoneMedium"          ,"h_dairy_preg_Ter(27.1,Inf]:h_fastfood_preg_Ter(0.25,0.83]" ,
+                       "h_dairy_preg_Ter(17.1,27.1]:h_fish_preg_Ter(1.9,4.1]"       ,"h_dairy_preg_Ter(27.1,Inf]:h_fish_preg_Ter(1.9,4.1]"   ,    
+                       "h_dairy_preg_Ter(17.1,27.1]:h_fish_preg_Ter(4.1,Inf]"       ,"h_dairy_preg_Ter(27.1,Inf]:h_fish_preg_Ter(4.1,Inf]",       
+                       "h_dairy_preg_Ter(17.1,27.1]:h_folic_t1_None"                ,"h_dairy_preg_Ter(27.1,Inf]:h_folic_t1_None"     ,           
+                       "h_dairy_preg_Ter(27.1,Inf]:h_fruit_preg_Ter(0.6,18.2]"      ,"h_dairy_preg_Ter(27.1,Inf]:h_legume_preg_Ter(0.5,2]"   ,    
+                       "h_dairy_preg_Ter(17.1,27.1]:h_meat_preg_Ter(10,Inf]"        ,"h_dairy_preg_Ter(17.1,27.1]:h_pavig_t3_NoneLow"    ,        
+                       "h_dairy_preg_Ter(27.1,Inf]:h_pavig_t3_NoneLow"              ,"h_dairy_preg_Ter(27.1,Inf]:h_pavig_t3_NoneMedium"  ,        
+                       "h_fastfood_preg_Ter(0.25,0.83]:h_fish_preg_Ter(1.9,4.1]"    ,"h_fastfood_preg_Ter(0.83,Inf]:h_fish_preg_Ter(1.9,4.1]" ,   
+                       "h_fastfood_preg_Ter(0.25,0.83]:h_folic_t1_None"             ,"h_fastfood_preg_Ter(0.83,Inf]:h_folic_t1_None" ,            
+                       "h_fastfood_preg_Ter(0.25,0.83]:h_fruit_preg_Ter(0.6,18.2]"  ,"h_fastfood_preg_Ter(0.83,Inf]:h_fruit_preg_Ter(0.6,18.2]",  
+                       "h_fastfood_preg_Ter(0.25,0.83]:h_legume_preg_Ter(2,Inf]"    ,"h_fastfood_preg_Ter(0.25,0.83]:h_meat_preg_Ter(10,Inf]" ,   
+                       "h_fastfood_preg_Ter(0.83,Inf]:h_meat_preg_Ter(10,Inf]"      ,"h_fastfood_preg_Ter(0.25,0.83]:h_meat_preg_Ter(6.5,10]" ,   
+                       "h_fastfood_preg_Ter(0.83,Inf]:h_meat_preg_Ter(6.5,10]"      ,"h_fastfood_preg_Ter(0.25,0.83]:h_pamod_t3_NoneOften"   ,    
+                       "h_fastfood_preg_Ter(0.83,Inf]:h_pamod_t3_NoneOften"         ,"h_fastfood_preg_Ter(0.83,Inf]:h_pavig_t3_NoneLow"  ,        
+                       "h_fastfood_preg_Ter(0.25,0.83]:h_pavig_t3_NoneMedium"       ,"h_fish_preg_Ter(1.9,4.1]:h_fruit_preg_Ter(0.6,18.2]" ,      
+                       "h_fish_preg_Ter(1.9,4.1]:h_legume_preg_Ter(0.5,2]"          ,"h_fish_preg_Ter(4.1,Inf]:h_legume_preg_Ter(0.5,2]",         
+                       "h_fish_preg_Ter(4.1,Inf]:h_legume_preg_Ter(2,Inf]"          ,"h_fish_preg_Ter(1.9,4.1]:h_meat_preg_Ter(10,Inf]" ,         
+                       "h_fish_preg_Ter(4.1,Inf]:h_meat_preg_Ter(10,Inf]"           ,"h_fish_preg_Ter(1.9,4.1]:h_meat_preg_Ter(6.5,10]" ,         
+                       "h_fish_preg_Ter(4.1,Inf]:h_meat_preg_Ter(6.5,10]"           ,"h_fish_preg_Ter(1.9,4.1]:h_pamod_t3_NoneOften"   ,          
+                       "h_fish_preg_Ter(4.1,Inf]:h_pamod_t3_NoneOften"              ,"h_fish_preg_Ter(1.9,4.1]:h_pamod_t3_NoneSometimes",         
+                       "h_fish_preg_Ter(1.9,4.1]:h_pamod_t3_NoneVery Often"         ,"h_fish_preg_Ter(1.9,4.1]:h_pavig_t3_NoneLow"   ,            
+                       "h_fish_preg_Ter(4.1,Inf]:h_pavig_t3_NoneLow"                ,"h_folic_t1_None:h_fruit_preg_Ter(0.6,18.2]"  ,              
+                       "h_folic_t1_None:h_legume_preg_Ter(0.5,2]"                   ,"h_folic_t1_None:h_meat_preg_Ter(10,Inf]"   ,                
+                       "h_folic_t1_None:h_meat_preg_Ter(6.5,10]"                    ,"h_folic_t1_None:h_pamod_t3_NoneOften"    ,                  
+                       "h_folic_t1_None:h_pamod_t3_NoneSometimes"                   ,"h_folic_t1_None:h_pavig_t3_NoneLow" ,                       
+                       "h_fruit_preg_Ter(0.6,18.2]:h_meat_preg_Ter(10,Inf]"         ,"h_legume_preg_Ter(0.5,2]:h_meat_preg_Ter(10,Inf]" ,         
+                       "h_legume_preg_Ter(2,Inf]:h_meat_preg_Ter(10,Inf]"           ,"h_legume_preg_Ter(0.5,2]:h_pamod_t3_NoneOften"   ,          
+                       "h_legume_preg_Ter(2,Inf]:h_pamod_t3_NoneOften"              ,"h_legume_preg_Ter(0.5,2]:h_pamod_t3_NoneSometimes" ,        
+                       "h_meat_preg_Ter(10,Inf]:h_pamod_t3_NoneOften"               ,"h_meat_preg_Ter(10,Inf]:h_pamod_t3_NoneSometimes" ,         
+                       "h_meat_preg_Ter(6.5,10]:h_pamod_t3_NoneSometimes"           ,"h_meat_preg_Ter(10,Inf]:h_pavig_t3_NoneLow" ,               
+                       "h_meat_preg_Ter(6.5,10]:h_pavig_t3_NoneLow"                 ,"h_pamod_t3_NoneOften:h_pavig_t3_NoneLow"   )
+
+
+
+
+
+pred_lasso_inter <- data.frame(actual=c(test_data$hs_correct_raven),
+                         predicted=c(predict(lm_lasso_inter, test_data, type="response")))
+
+RMSE_lasso_inter<-rmse(pred_lasso_inter$actual, pred_lasso_inter$predicted)
+
 pd_inter <- aov(data = preg_data, 
                 hs_correct_raven~h_fastfood_preg_Ter*h_fish_preg_Ter)
-summary(pd_inter)
+summary(pd_inter)$d
 
 interaction.plot(x.factor = preg_data$h_fish_preg_Ter, #x-axis variable
-                 trace.factor = preg_data$h_fastfood_preg_Ter, #variable for lines
+                 trace.factor = preg_data$h_fastfood_preg_Ter,#variable for lines
                  response = preg_data$hs_correct_raven, #y-axis variable
                  fun = mean, #metric to plot
                  ylab = "raven score",
@@ -151,7 +233,7 @@ interaction.plot(x.factor = preg_data$h_fish_preg_Ter, #x-axis variable
 
 
 
-##################
+##################Observing metrics
 #Adjusted R^2
 summary(lmfull)$adj.r.squared
 summary(lm_lasso)$adj.r.squared
@@ -185,61 +267,10 @@ mean((test_data$hs_correct_raven-predict(lm_stepwise, test_data, type="response"
 data_mod <- data.frame(Predicted = predict(lm_stepwise, test_data, type="response"),  # Create data for ggplot2
                        Observed = test_data$hs_correct_raven)
 
-ggplot(data_mod,                                     # Draw plot using ggplot2 package
-       aes(x = Predicted,
-           y = Observed)) +
-  geom_point() +
-  geom_abline(intercept = 0,
-              slope = 1,
-              color = "red",
-              size = 2)
-
-mean((test_data$hs_correct_raven - predict(lm_stepwise,test_data,type = "response")) ^ 2)
-
-#32.26023
 
 
-###
-data_mod2 <- data.frame(Predicted = predict(lm_lasso,test_data,type = "response"),  # Create data for ggplot2
-                       Observed = test_data$hs_correct_raven)
 
-ggplot(data_mod2,                                     # Draw plot using ggplot2 package
-       aes(x = Predicted,
-           y = Observed)) +
-  geom_point() +
-  geom_abline(intercept = 0,
-              slope = 1,
-              color = "red",
-              size = 2)
 
-mean((test_data$hs_correct_raven - predict(lm_lasso,test_data,type = "response")) ^ 2)
-#31.25184
-
-####
-data_mod3 <- data.frame(Predicted = predict(lm_lasso_inter,test_data,type = "response"),  # Create data for ggplot2
-                        Observed = test_data$hs_correct_raven)
-
-ggplot(data_mod3,                                     # Draw plot using ggplot2 package
-       aes(x = Predicted,
-           y = Observed)) +
-  geom_point() +
-  geom_abline(intercept = 0,
-              slope = 1,
-              color = "red",
-              size = 2)
-###
-data_mod4 <- data.frame(Predicted = predict(lm_stepwise_inter,test_data,type = "response"),  # Create data for ggplot2
-                        Observed = test_data$hs_correct_raven)
-
-ggplot(data_mod4,                                     # Draw plot using ggplot2 package
-       aes(x = Predicted,
-           y = Observed)) +
-  geom_point() +
-  geom_abline(intercept = 0,
-              slope = 1,
-              color = "red",
-              size = 2)
-#55.99693
 
 
 
