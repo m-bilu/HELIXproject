@@ -20,6 +20,7 @@ data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_data
 # https://towardsdatascience.com/how-to-handle-missing-data-8646b18db0d4
 # https://www.youtube.com/watch?v=MpnxwNXGV-E
 # https://www.theanalysisfactor.com/multiple-imputation-in-a-nutshell/
+# https://www.linkedin.com/pulse/mice-nice-why-should-you-care-ofir-shalev/
 
 
 # What are we counting as dirty data? N/A's only.
@@ -71,8 +72,6 @@ plot(wgtShort, dataShort[, 'hs_correct_raven']
 ## No visible relationship in between Raven Score and Maternal Weight Gain
 ##  during pregnancy. No slope, no clustering of datapoints depending on 
 ##  weightgain value.
-
-## IS THIS ENOUGH TO KICK IT OUT?
 
 
 ## --------------- CLEANING OPTIONS -------------- ##
@@ -243,15 +242,55 @@ dataF <- complete(dataImp, 5)
 ###############################################################
 ### ----------- Choosing Best Cleaning Strategy ----------- ###
 
-## Measurement for quality of cleaning?
-# Biasness of data?
-# Variance of data?
-# CHECK EMAIL
-# https://www.youtube.com/watch?v=xKs8TijvL8I
+# IF data follows MAR assumption, Multiple imputation is best
+# Checking algorithm from 
+# https://campus.datacamp.com/courses/scalable-data-processing-in-r/case-study-a-preliminary-analysis-of-the-housing-data?ex=4#:~:text=To%20check%20if%20your%20data,meaning%20your%20data%20are%20MAR.
+#   Must be performed for all columns with some NA's
+
+# Algorithm described in report
+# We are assuming that data is not MNAR, since we are not in contact with
+#   data collection team, cannot discern dependencies of covariates 
+#   outside of observed data.
 
 
+binarize <- function(vec) {
+  res <- rep(0, length(vec))
+  for (i in 1:length(vec)) {
+    if (is.na(vec[i])) {
+      res[i] = 1
+    }
+  }
+  
+  return (res)
+}
 
-## NOTE: # graph with MSPE, phi, lambda
+dataProof <- data[, colSums(is.na(data)) > 0]
+
+pvalMeans <- rep(NA, ncol(dataProof))
+
+for (i in 1:ncol(dataProof)) {
+  curcol <- dataProof[, i]
+  bin <- binarize(curcol)
+  
+  dataDep <- dataProof[, -i] # All dependent covariates, ith cov is indep
+  
+  pvals <- rep(NA, ncol(dataDep))
+  
+  for (j in 1:ncol(dataDep)) {
+    # Logistic regression
+    Mtest <- summary(glm(bin ~ dataDep[, j]),
+                     family=binomial)
+    pvals[j] <- Mtest$coefficients[2, 4]
+    
+  }
+  
+  pvalMeans[i] <- mean(pvals)
+  
+  print(paste('i =', i))
+  
+}
+
+median(na.omit(pvalMeans))
 
 
 

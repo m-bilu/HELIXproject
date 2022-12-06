@@ -109,11 +109,6 @@ for (i in 1:ncol(dataNoLife)) {
            xlab=colnames(dataNoLife)[i], 
            main='Plot', ann=TRUE)
   }
-  
-  if (i %% 3) {
-    dev.off()
-    pdf(paste('C:/Users/mbila/Documents/STAT 331 Final Project/Bilal/outcomeGraphs/graph', i, '.pdf'))
-  }
 }
 
 dev.off()
@@ -138,12 +133,6 @@ sometrans <- rbind(sometrans, add)
 add <- data.frame('hs_pm25_yr_hs_h_None', 'quadratic')
 names(add) <- c('Covariate', 'Relationship')
 sometrans <- rbind(sometrans, add)
-add <- data.frame('h_accesspoints300_preg_Log', 'wierd')
-names(add) <- c('Covariate', 'Relationship')
-sometrans <- rbind(sometrans, add)
-add <- data.frame('h_fdensity300_preg_Log', 'wierd')
-names(add) <- c('Covariate', 'Relationship')
-sometrans <- rbind(sometrans, add)
 add <- data.frame('hs_landuseshan300_h_None', 'quadratic')
 names(add) <- c('Covariate', 'Relationship')
 sometrans <- rbind(sometrans, add)
@@ -157,9 +146,6 @@ add <- data.frame('hs_cs_c_Log2', 'quadratic') # + 5 to remove 0 values for log
 names(add) <- c('Covariate', 'Relationship')
 sometrans <- rbind(sometrans, add)
 add <- data.frame('h_humidity_preg_None', 'quadratic')
-names(add) <- c('Covariate', 'Relationship')
-sometrans <- rbind(sometrans, add)
-add <- data.frame('hs_KIDMED_None', 'quadratic') # COULD BE LOG
 names(add) <- c('Covariate', 'Relationship')
 sometrans <- rbind(sometrans, add)
 add <- data.frame('h_temperature_preg_None', 'quadratic')
@@ -191,6 +177,42 @@ names(add) <- c('Covariate', 'Relationship')
 sometrans <- rbind(sometrans, add)
 
 # sometrans now holds the names and relationships of all covs that require transformation 
+
+# Plotting for EDA
+
+sometransNames <- sometrans[, 1]
+
+for (i in sometransNames) {
+  
+  png(paste('C:/Users/mbila/Documents/STAT 331 Final Project/Bilal/outcomeGraphs/individual graphs/', i, '.png'))
+  print(i)
+  # IF categorical/discrete var, draw boxplot
+  if ((is.numeric(dataNoLife[, i]) == FALSE) 
+      || length(which(floor(dataNoLife[, i]) == dataNoLife[, i]))
+      == length(dataNoLife[, i])) {
+    
+    print(i)
+    
+    boxplot(fullData$hs_correct_raven~dataNoLife[, i], 
+            ylab='Raven Score', 
+            xlab=i, 
+            main='Boxplot', ann=TRUE)
+    
+    # if continuous, draw scatterplot
+  } else {
+    
+    print(i)
+    
+    plot(fullData$hs_correct_raven~dataNoLife[, i], 
+         ylab='Raven Score', 
+         xlab=i, 
+         main='Plot', ann=TRUE)
+  }
+  
+  dev.off()
+  
+}
+
 
 
 
