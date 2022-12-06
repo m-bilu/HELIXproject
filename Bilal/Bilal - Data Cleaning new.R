@@ -24,9 +24,12 @@ data <- read.csv('C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_data
 
 # What are we counting as dirty data? N/A's only.
 # Which covariates have NA's?
-na <- which(lapply((lapply(data, is.na)), function(x) {length(x[x==TRUE])}) > 0)
 dataRmv <- na.omit(data) # all obvs with no NA Values
-md.pattern(data[, names(na)])
+dataColNames <- data
+colnames(dataColNames) <- (1:ncol(dataColNames))
+na1 <- which(lapply((lapply(dataColNames, is.na)), function(x) {length(x[x==TRUE])}) > 0)
+na2 <- which(lapply((lapply(data, is.na)), function(x) {length(x[x==TRUE])}) > 0)
+md.pattern(dataColNames[, names(na1)], rotate.names = TRUE)
 nrow(data) - nrow(dataRmv) 
 
 # 230 rows with some NA's
@@ -152,8 +155,8 @@ for (i in 1:nrow(dataFinal)) {
   }
 }
 dataFinalDel <- dataFinal[-toDel, ]
-write.csv(dataFinalDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v0.csv',
-          row.names = FALSE)
+#write.csv(dataFinalDel, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v0.csv',
+#          row.names = FALSE)
 
 
 
@@ -203,18 +206,11 @@ for (colnum in 1:ncol(cleandataFinal)) {
 which(is.na(dataFinal)) # Should be non-zero vector
 which(is.na(cleandataFinal)) # Should be 0
 
-write.csv(cleandataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v1.csv',
-          row.names = FALSE)
+#write.csv(cleandataFinal, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v1.csv',
+#          row.names = FALSE)
 
 ## Double check if u have all covariates, should be 241 not 237 
 ## NOTE: # graph with MSPE, phi, lambda
-
-
-
-
-
-
-
 
 
 
@@ -239,8 +235,8 @@ dataImp$imp$hs_correct_raven
 # JUSTIFY CHOOSING 5
 dataF <- complete(dataImp, 5)
 
-write.csv(dataF, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v2.csv',
-          row.names = FALSE)
+#write.csv(dataF, file = 'C:/Users/mbila/Documents/STAT 331 Final Project/Data/full_clean_data_v2.csv',
+#          row.names = FALSE)
 
 
 
