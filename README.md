@@ -30,10 +30,8 @@ of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-  - **Aania Lastname** - *link your github* -
-    [PurpleBooth](https://github.com/PurpleBooth)
-  - **Bilal Lastname** - *link your github* -
-    [PurpleBooth](https://github.com/PurpleBooth)
+  - **Aania Shah** - *link your github* -
+  - **Bilal Khan** - https://github.com/m-bilu -
   - **Srijal Lastname** - *link your github* -
     [PurpleBooth](https://github.com/PurpleBooth)
   - **Kazi Rahman** - *link your github* -
